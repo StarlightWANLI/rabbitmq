@@ -1,6 +1,5 @@
 package com.laowan.product.product;
 
-import com.laowan.product.config.RabbitConfig;
 import com.laowan.product.enums.ExchangeEnum;
 import com.laowan.product.enums.QueueEnum;
 import lombok.extern.slf4j.Slf4j;
@@ -22,9 +21,7 @@ import java.util.UUID;
 public class MsgProducer implements RabbitTemplate.ConfirmCallback{
 
     //由于rabbitTemplate的scope属性设置为ConfigurableBeanFactory.SCOPE_PROTOTYPE，所以不能自动注入
-    @Autowired
     private RabbitTemplate rabbitTemplate;
-
 
 
     /**
@@ -44,20 +41,20 @@ public class MsgProducer implements RabbitTemplate.ConfirmCallback{
     }
 
 
-
-
     /**
      * 构造方法注入rabbitTemplate
      */
-/*    @Autowired
+    @Autowired
     public MsgProducer(RabbitTemplate rabbitTemplate) {
         this.rabbitTemplate = rabbitTemplate;
         rabbitTemplate.setConfirmCallback(this); //rabbitTemplate如果为单例的话，那回调就是最后设置的内容
-    }*/
+    }
 
 
-
-
+    /**
+     * 发送字符串
+     * @param content
+     */
     public void sendMsg(String content) {
         //设置消息唯一id
         CorrelationData correlationId = new CorrelationData(UUID.randomUUID().toString());

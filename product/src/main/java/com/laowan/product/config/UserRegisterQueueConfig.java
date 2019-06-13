@@ -9,9 +9,12 @@ import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Scope;
 
 /**
  * @program: rabbitmq
@@ -59,6 +62,8 @@ public class UserRegisterQueueConfig {
 
     /**
      * 将用户注册队列绑定到路由交换配置上并设置指定路由键进行转发
+     *
+     * BindingBuilder  构建绑定时，才会建立路由，队列以及两者的绑定，同@RabbitListener(bindings = @QueueBinding()类似
      * @return
      */
     @Bean
@@ -77,11 +82,14 @@ public class UserRegisterQueueConfig {
         connectionFactory.setVirtualHost(this.vhost);
         connectionFactory.setPublisherConfirms(true);
 
+       // connectionFactory.setChannelCacheSize(100);
+
         return connectionFactory;
     }
 
 
     @Bean
+    @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     public RabbitTemplate rabbitTemplate() {
         RabbitTemplate template = new RabbitTemplate(connectionFactory());
         return template;
