@@ -67,6 +67,14 @@ public class DirectProducer implements RabbitTemplate.ConfirmCallback{
 
         //发送的消息是Message对象就直接发送，不是的先转化为message对象
        // rabbitTemplate.convertAndSend(ExchangeEnum.DIRECT_EXCHANGE.getValue(), QueueEnum.TEST_DIRECT.getRoutingKey(), content, correlationId);
+
+        // 发送消息到指定的交换器，指定的路由键，在消息转换完成后，通过 MessagePostProcessor 来添加属性
+  /*      rabbitTemplate.convertAndSend("direct.exchange","key.1",user,mes -> {
+            mes.getMessageProperties().setDeliveryMode(MessageDeliveryMode.NON_PERSISTENT);
+            return mes;
+        });*/
+
+
     }
 
 
