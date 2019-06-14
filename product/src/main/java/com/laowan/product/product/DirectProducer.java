@@ -3,6 +3,8 @@ package com.laowan.product.product;
 import com.laowan.product.enums.ExchangeEnum;
 import com.laowan.product.enums.QueueEnum;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.core.Message;
+import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,8 +57,16 @@ public class DirectProducer implements RabbitTemplate.ConfirmCallback{
     public void sendMsg(String content) {
         //设置消息唯一id
         CorrelationData correlationId = new CorrelationData(UUID.randomUUID().toString());
-        //把消息放入ROUTINGKEY_A对应的队列当中去，对应的是队列A
-        rabbitTemplate.convertAndSend(ExchangeEnum.DIRECT_EXCHANGE.getValue(), QueueEnum.TEST_DIRECT.getRoutingKey(), content, correlationId);
+        //直接发送message对象
+        MessageProperties  messageProperties = new MessageProperties();
+        //过期时间10秒
+        messageProperties.setExpiration("10000");
+        Message message = new Message(content.getBytes(),messageProperties);
+
+        rabbitTemplate.send(ExchangeEnum.DIRECT_EXCHANGE.getValue(), QueueEnum.TEST_DIRECT.getRoutingKey(),message,correlationId);
+
+        //发送的消息是Message对象就直接发送，不是的先转化为message对象
+       // rabbitTemplate.convertAndSend(ExchangeEnum.DIRECT_EXCHANGE.getValue(), QueueEnum.TEST_DIRECT.getRoutingKey(), content, correlationId);
     }
 
 
