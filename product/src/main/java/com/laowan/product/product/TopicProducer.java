@@ -12,17 +12,25 @@ import java.util.UUID;
 
 /**
  * @program: rabbitmq
- * @description: 生产者
+ * @description: direct模式   完全匹配的生产者
  * @author: wanli
  * @create: 2019-06-13 16:47
  **/
 @Component
 @Slf4j
-public class MsgProducer implements RabbitTemplate.ConfirmCallback{
+public class TopicProducer implements RabbitTemplate.ConfirmCallback{
 
     //由于rabbitTemplate的scope属性设置为ConfigurableBeanFactory.SCOPE_PROTOTYPE，所以不能自动注入
     private RabbitTemplate rabbitTemplate;
 
+    /**
+     * 构造方法注入rabbitTemplate
+     */
+    @Autowired
+    public TopicProducer(RabbitTemplate rabbitTemplate) {
+        this.rabbitTemplate = rabbitTemplate;
+        rabbitTemplate.setConfirmCallback(this); //rabbitTemplate如果为单例的话，那回调就是最后设置的内容
+    }
 
     /**
      * 消息被成功消费的确认回调方法        消息成功发送到broker里面，收到反馈
@@ -40,26 +48,17 @@ public class MsgProducer implements RabbitTemplate.ConfirmCallback{
         }
     }
 
-
     /**
-     * 构造方法注入rabbitTemplate
-     */
-    @Autowired
-    public MsgProducer(RabbitTemplate rabbitTemplate) {
-        this.rabbitTemplate = rabbitTemplate;
-        rabbitTemplate.setConfirmCallback(this); //rabbitTemplate如果为单例的话，那回调就是最后设置的内容
-    }
-
-
-    /**
-     * 发送字符串
+     * 发送字符串  到topic队列中    完全匹配
+     * @param routingKey
      * @param content
      */
-    public void sendMsg(String content) {
+    public void sendMsg(String routingKey,String content) {
         //设置消息唯一id
         CorrelationData correlationId = new CorrelationData(UUID.randomUUID().toString());
         //把消息放入ROUTINGKEY_A对应的队列当中去，对应的是队列A
-        rabbitTemplate.convertAndSend(ExchangeEnum.USER_REGISTER.getValue(), QueueEnum.USER_REGISTER.getRoutingKey(), content, correlationId);
+        rabbitTemplate.convertAndSend(ExchangeEnum.TOPIC_EXCHANGE.getValue(), routingKey, content, correlationId);
     }
+
 
 }

@@ -10,16 +10,13 @@ import lombok.Getter;
  **/
 @Getter
 public enum ExchangeEnum {
-    /**
-     * 用户注册交换配置枚举
-     */
-    USER_REGISTER("user.register.topic.exchange"),
-
-
     DIRECT_EXCHANGE("test.direct.exchange"),
 
+    TOPIC_EXCHANGE("test.topic.exchange"),
 
     FANOUT_EXCHANGE("test.fanout.exchange");
+
+
 
     private String value;
 
