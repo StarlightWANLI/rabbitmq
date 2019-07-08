@@ -14,7 +14,9 @@ public enum ExchangeEnum {
 
     TOPIC_EXCHANGE("test.topic.exchange"),
 
-    FANOUT_EXCHANGE("test.fanout.exchange");
+    FANOUT_EXCHANGE("test.fanout.exchange"),
+
+    REPLY_EXCHANGE("test.reply.exchange");
 
 
 

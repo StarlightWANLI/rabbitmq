@@ -16,6 +16,11 @@ public enum QueueEnum {
     USER_REGISTER("user.register.queue","user.register"),*/
 
     /**
+     * 应答模式
+     */
+    TEST_REPLY("test.reply.queue","test.reply"),
+
+    /**
      * direct模式测试
      */
     TEST_DIRECT("test.direct.queue","test.direct"),
@@ -56,6 +61,7 @@ public enum QueueEnum {
      *fanout模式
      */
     TEST_FANOUT_THREE("test.fanout.three.queue","")
+
 
 
 
