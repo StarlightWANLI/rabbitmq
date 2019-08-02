@@ -5,12 +5,14 @@ import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.rabbit.listener.ConditionalRejectingErrorHandler;
+import org.springframework.amqp.rabbit.listener.exception.ListenerExecutionFailedException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 import org.springframework.util.ErrorHandler;
+import sun.plugin2.message.Message;
 
 /**
  * @program: rabbitmq
@@ -73,7 +75,16 @@ public class RabbitmqConfig {
         ErrorHandler errorHandler = new ErrorHandler() {
             @Override
             public void handleError(Throwable throwable) {
-                log.error("异常原因：" +  throwable.getMessage());
+                try{
+                    //比如出现异常的消息统一保存，留案
+                    String  msg = new String(((ListenerExecutionFailedException) throwable).getFailedMessage().getBody());
+                    log.error("消费失败,消息内容是：" + msg);
+                }catch (Exception e){
+
+                }
+
+
+              //  log.error("异常原因：" +  throwable.getMessage());
             }
         };
         return  errorHandler;

@@ -11,6 +11,7 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ErrorHandler;
 import org.springframework.util.StopWatch;
 
 import java.util.UUID;
@@ -69,21 +70,23 @@ public class ReplyProducer implements RabbitTemplate.ConfirmCallback{
         //直接发送message对象
         MessageProperties  messageProperties = new MessageProperties();
         //过期时间10秒
-       // messageProperties.setExpiration("10000");
+        messageProperties.setExpiration("5000");
+       // messageProperties.set
+        content = Thread.currentThread()+"发送的消息是" + content;
         Message message = new Message(content.getBytes(),messageProperties);
 
-        System.out.println("发送的消息是：" + content);
 
+        System.out.println("发送的消息是：" + content );
         StopWatch sw = new StopWatch();
         sw.start("发送消息任务");
 
-        Message message1 =  rabbitTemplate.sendAndReceive(ExchangeEnum.REPLY_EXCHANGE.getValue(), QueueEnum.TEST_REPLY.getRoutingKey(),message,correlationId);
+        Message  message1 =  rabbitTemplate.sendAndReceive(ExchangeEnum.REPLY_EXCHANGE.getValue(), QueueEnum.TEST_REPLY.getRoutingKey(),message,correlationId);
 
         sw.stop();
         System.out.println(sw.prettyPrint());
 
         if (message1!=null) {
-            System.out.println("应答的消息是：" + new String(message1.getBody()));
+            System.out.println(Thread.currentThread() + "应答的消息是：" + new String(message1.getBody()));
         }
 
         return message1;

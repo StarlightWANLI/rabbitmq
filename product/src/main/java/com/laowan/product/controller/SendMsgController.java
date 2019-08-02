@@ -21,7 +21,9 @@ public class SendMsgController {
 
     @GetMapping("/sendMsg")
     public  String sendMsg(String msg){
-        Message message = replyProducer.sendAndReceive(msg);
+        int num = (int) (Math.random() * 10 + 1);
+        msg = msg + num;
+        Message message = replyProducer.sendAndReceive(msg+"，消息的尾号是："+num);
         if(message!=null){
             return new String(message.getBody());
         }else{

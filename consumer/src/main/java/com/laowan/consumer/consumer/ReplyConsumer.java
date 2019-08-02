@@ -9,6 +9,7 @@ import org.springframework.messaging.handler.annotation.Headers;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StopWatch;
 
 import java.io.IOException;
 import java.util.Map;
@@ -73,22 +74,24 @@ public class ReplyConsumer {
     public String onMessage(byte[] message,
                           @Headers Map<String, Object> headers,
                           Channel channel) {
-     /*   channel.basicAck(deliveryTag, false);*/
-        try {
+        String msg = new String(message);
+        System.out.println("获取到的是二进制消息：" + msg);
+        StopWatch sw = new StopWatch();
+        sw.start("消费消息计时器");
+/*        try {
             //手动应答    放在方法前后没有区别，还是会等待ack
             channel.basicAck(0L, true);
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        }*/
         try {
-            int num = (int) (Math.random() * 10 + 1);
-            System.out.println("等待时间：" + num);
-            Thread.sleep(8 * 1000);
+                System.out.println("出现卡顿，等待ack");
+                Thread.sleep(3 * 1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
-        System.out.println("获取到的是二进制消息：" + new String(message));
+        sw.stop();
+        System.out.println(sw.prettyPrint());
         return  "成功消费的消息是：" + new String(message);
     }
 
