@@ -18,7 +18,7 @@ import java.util.UUID;
  **/
 @Component
 @Slf4j
-public class TopicProducer implements RabbitTemplate.ConfirmCallback{
+public class TopicProducer implements RabbitTemplate.ConfirmCallback {
 
     //由于rabbitTemplate的scope属性设置为ConfigurableBeanFactory.SCOPE_PROTOTYPE，所以不能自动注入
     private RabbitTemplate rabbitTemplate;
@@ -34,6 +34,7 @@ public class TopicProducer implements RabbitTemplate.ConfirmCallback{
 
     /**
      * 消息被成功消费的确认回调方法        消息成功发送到broker里面，收到反馈
+     *
      * @param correlationData
      * @param ack
      * @param cause
@@ -50,10 +51,11 @@ public class TopicProducer implements RabbitTemplate.ConfirmCallback{
 
     /**
      * 发送字符串  到topic队列中    完全匹配
+     *
      * @param routingKey
      * @param content
      */
-    public void sendMsg(String routingKey,String content) {
+    public void sendMsg(String routingKey, String content) {
         //设置消息唯一id
         CorrelationData correlationId = new CorrelationData(UUID.randomUUID().toString());
         //把消息放入ROUTINGKEY_A对应的队列当中去，对应的是队列A

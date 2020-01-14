@@ -10,7 +10,7 @@ import lombok.Getter;
  **/
 @Getter
 public enum QueueEnum {
-/*    *//**
+    /*    *//**
      * 用户注册枚举   direct模式测试
      *//*
     USER_REGISTER("user.register.queue","user.register"),*/
@@ -18,54 +18,48 @@ public enum QueueEnum {
     /**
      * 应答模式
      */
-    TEST_REPLY("test.reply.queue","test.reply"),
+    TEST_REPLY("test.reply.queue", "test.reply"),
 
     /**
      * direct模式测试
      */
-    TEST_DIRECT("test.direct.queue","test.direct"),
+    TEST_DIRECT("test.direct.queue", "test.direct"),
 
     /**
      * topic模式
      */
-    TEST_TOPIC_ONE("test.topic.queue1","test.topic.one"),
+    TEST_TOPIC_ONE("test.topic.queue1", "test.topic.one"),
 
     /**
      * topic模式
      */
-    TEST_TOPIC_TWO("test.topic.queue2","test.topic.two"),
+    TEST_TOPIC_TWO("test.topic.queue2", "test.topic.two"),
 
     /**
      * topic模式
      */
-    TEST_TOPIC_THREE("test.topic.queue3","test.topic.three"),
+    TEST_TOPIC_THREE("test.topic.queue3", "test.topic.three"),
 
     /**
      * topic模式
      */
-    TEST_TOPIC_FOUR("test.topic.queue4","test.topic.four.many.match"),
-
+    TEST_TOPIC_FOUR("test.topic.queue4", "test.topic.four.many.match"),
 
 
     /**
-     *fanout模式
+     * fanout模式
      */
-    TEST_FANOUT_ONE("test.fanout.one.queue",""),
+    TEST_FANOUT_ONE("test.fanout.one.queue", ""),
 
     /**
-     *fanout模式
+     * fanout模式
      */
-    TEST_FANOUT_TWO("test.fanout.two.queue",""),
+    TEST_FANOUT_TWO("test.fanout.two.queue", ""),
 
     /**
-     *fanout模式
+     * fanout模式
      */
-    TEST_FANOUT_THREE("test.fanout.three.queue","")
-
-
-
-
-    ;
+    TEST_FANOUT_THREE("test.fanout.three.queue", "");
     /**
      * 队列名称
      */

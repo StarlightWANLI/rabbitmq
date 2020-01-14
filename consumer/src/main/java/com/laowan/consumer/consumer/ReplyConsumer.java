@@ -37,6 +37,7 @@ public class ReplyConsumer {
 
     /**
      * 消费者接收消息并消费消息    使用@RabbitListener(bindings = @QueueBinding(）声明，就不用担心消费者先启动时，生产者没启动导致路由，队列不存在的问题了
+     *
      * @param msg
      * @param headers
      * @param channel
@@ -48,20 +49,20 @@ public class ReplyConsumer {
             key = "user.register.#"
     ))*/
 
-   // @RabbitHandler
+    // @RabbitHandler
     public void onMessage(@Payload String msg,
-                             @Headers Map<String, Object> headers,
-                             Channel channel) throws Exception {
+                          @Headers Map<String, Object> headers,
+                          Channel channel) throws Exception {
         System.out.println("--------------收到消息，开始消费------------");
         System.out.println("收到的消息是：" + msg);
         Long deliveryTag = (Long) headers.get(AmqpHeaders.DELIVERY_TAG);
 
         Thread.sleep(1000);
         //抛出异常，出发重试机制
-      //  throw  new RuntimeException("消息处理失败");
+        //  throw  new RuntimeException("消息处理失败");
         // ACK
-       // channel.basicAck(deliveryTag, false);
-       // return
+        // channel.basicAck(deliveryTag, false);
+        // return
     }
 
 
@@ -72,8 +73,8 @@ public class ReplyConsumer {
 
     @RabbitHandler
     public String onMessage(byte[] message,
-                          @Headers Map<String, Object> headers,
-                          Channel channel) {
+                            @Headers Map<String, Object> headers,
+                            Channel channel) {
         String msg = new String(message);
         System.out.println("获取到的是二进制消息：" + msg);
         StopWatch sw = new StopWatch();
@@ -85,14 +86,14 @@ public class ReplyConsumer {
             e.printStackTrace();
         }*/
         try {
-                System.out.println("出现卡顿，等待ack");
-                Thread.sleep(3 * 1000);
+            System.out.println("出现卡顿，等待ack");
+            Thread.sleep(3 * 1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
         sw.stop();
         System.out.println(sw.prettyPrint());
-        return  "成功消费的消息是：" + new String(message);
+        return "成功消费的消息是：" + new String(message);
     }
 
 }

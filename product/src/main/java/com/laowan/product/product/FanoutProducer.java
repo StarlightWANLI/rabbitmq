@@ -17,7 +17,7 @@ import java.util.UUID;
  **/
 @Component
 @Slf4j
-public class FanoutProducer implements RabbitTemplate.ConfirmCallback{
+public class FanoutProducer implements RabbitTemplate.ConfirmCallback {
 
     //由于rabbitTemplate的scope属性设置为ConfigurableBeanFactory.SCOPE_PROTOTYPE，所以不能自动注入
     private RabbitTemplate rabbitTemplate;
@@ -33,6 +33,7 @@ public class FanoutProducer implements RabbitTemplate.ConfirmCallback{
 
     /**
      * 消息被成功消费的确认回调方法        消息成功发送到broker里面，收到反馈
+     *
      * @param correlationData
      * @param ack
      * @param cause
@@ -49,13 +50,14 @@ public class FanoutProducer implements RabbitTemplate.ConfirmCallback{
 
     /**
      * 发送字符串
+     *
      * @param content
      */
     public void sendMsg(String content) {
         //设置消息唯一id
         CorrelationData correlationId = new CorrelationData(UUID.randomUUID().toString());
         //把消息放入ROUTINGKEY_A对应的队列当中去，对应的是队列A
-        rabbitTemplate.convertAndSend(ExchangeEnum.FANOUT_EXCHANGE.getValue(),null, content, correlationId);
+        rabbitTemplate.convertAndSend(ExchangeEnum.FANOUT_EXCHANGE.getValue(), null, content, correlationId);
     }
 
 

@@ -19,7 +19,6 @@ public enum ExchangeEnum {
     REPLY_EXCHANGE("test.reply.exchange");
 
 
-
     private String value;
 
     ExchangeEnum(String value) {

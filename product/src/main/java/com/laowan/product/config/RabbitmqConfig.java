@@ -45,14 +45,14 @@ public class RabbitmqConfig {
 
     @Bean
     public ConnectionFactory connectionFactory() {
-        CachingConnectionFactory connectionFactory = new CachingConnectionFactory(this.host,this.port);
+        CachingConnectionFactory connectionFactory = new CachingConnectionFactory(this.host, this.port);
 
         connectionFactory.setUsername(this.username);
         connectionFactory.setPassword(this.password);
         connectionFactory.setVirtualHost(this.vhost);
         connectionFactory.setPublisherConfirms(true);
 
-       // connectionFactory.setChannelCacheSize(100);
+        // connectionFactory.setChannelCacheSize(100);
 
         return connectionFactory;
     }
@@ -65,28 +65,28 @@ public class RabbitmqConfig {
         rabbitTemplate.setReceiveTimeout(receiveTimeOut);
         rabbitTemplate.setReplyTimeout(replyTimeOut);
 
-        rabbitTemplate.setReplyErrorHandler(getErrorHandler() );
+        rabbitTemplate.setReplyErrorHandler(getErrorHandler());
         return rabbitTemplate;
     }
 
     @Bean
     public ErrorHandler getErrorHandler() {
-       // ErrorHandler errorHandler = new ConditionalRejectingErrorHandler();
+        // ErrorHandler errorHandler = new ConditionalRejectingErrorHandler();
         ErrorHandler errorHandler = new ErrorHandler() {
             @Override
             public void handleError(Throwable throwable) {
-                try{
+                try {
                     //比如出现异常的消息统一保存，留案
-                    String  msg = new String(((ListenerExecutionFailedException) throwable).getFailedMessage().getBody());
+                    String msg = new String(((ListenerExecutionFailedException) throwable).getFailedMessage().getBody());
                     log.error("消费失败,消息内容是：" + msg);
-                }catch (Exception e){
+                } catch (Exception e) {
 
                 }
 
 
-              //  log.error("异常原因：" +  throwable.getMessage());
+                //  log.error("异常原因：" +  throwable.getMessage());
             }
         };
-        return  errorHandler;
+        return errorHandler;
     }
 }

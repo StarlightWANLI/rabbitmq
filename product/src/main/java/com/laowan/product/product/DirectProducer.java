@@ -20,7 +20,7 @@ import java.util.UUID;
  **/
 @Component
 @Slf4j
-public class DirectProducer implements RabbitTemplate.ConfirmCallback{
+public class DirectProducer implements RabbitTemplate.ConfirmCallback {
 
     //由于rabbitTemplate的scope属性设置为ConfigurableBeanFactory.SCOPE_PROTOTYPE，所以不能自动注入
     private RabbitTemplate rabbitTemplate;
@@ -36,6 +36,7 @@ public class DirectProducer implements RabbitTemplate.ConfirmCallback{
 
     /**
      * 消息被成功消费的确认回调方法        消息成功发送到broker里面，收到反馈
+     *
      * @param correlationData
      * @param ack
      * @param cause
@@ -52,21 +53,22 @@ public class DirectProducer implements RabbitTemplate.ConfirmCallback{
 
     /**
      * 发送字符串  到direct队列中    完全匹配
+     *
      * @param content
      */
     public void sendMsg(String content) {
         //设置消息唯一id
         CorrelationData correlationId = new CorrelationData(UUID.randomUUID().toString());
         //直接发送message对象
-        MessageProperties  messageProperties = new MessageProperties();
+        MessageProperties messageProperties = new MessageProperties();
         //过期时间10秒
         messageProperties.setExpiration("10000");
-        Message message = new Message(content.getBytes(),messageProperties);
+        Message message = new Message(content.getBytes(), messageProperties);
 
-        rabbitTemplate.send(ExchangeEnum.DIRECT_EXCHANGE.getValue(), QueueEnum.TEST_DIRECT.getRoutingKey(),message,correlationId);
+        rabbitTemplate.send(ExchangeEnum.DIRECT_EXCHANGE.getValue(), QueueEnum.TEST_DIRECT.getRoutingKey(), message, correlationId);
 
         //发送的消息是Message对象就直接发送，不是的先转化为message对象
-       // rabbitTemplate.convertAndSend(ExchangeEnum.DIRECT_EXCHANGE.getValue(), QueueEnum.TEST_DIRECT.getRoutingKey(), content, correlationId);
+        // rabbitTemplate.convertAndSend(ExchangeEnum.DIRECT_EXCHANGE.getValue(), QueueEnum.TEST_DIRECT.getRoutingKey(), content, correlationId);
 
         // 发送消息到指定的交换器，指定的路由键，在消息转换完成后，通过 MessagePostProcessor 来添加属性
   /*      rabbitTemplate.convertAndSend("direct.exchange","key.1",user,mes -> {
