@@ -16,7 +16,7 @@ import org.springframework.context.annotation.Configuration;
  * @author: wanli
  * @create: 2019-06-13 17:33
  **/
-@Configuration
+//@Configuration
 public class TestTopicQueueConfig {
 
     private static final String BINDING_KEY1 = "test.topic.*";

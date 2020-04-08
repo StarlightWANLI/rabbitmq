@@ -1,9 +1,6 @@
 package com.laowan.product;
 
-import com.laowan.product.product.DirectProducer;
-import com.laowan.product.product.FanoutProducer;
-import com.laowan.product.product.ReplyProducer;
-import com.laowan.product.product.TopicProducer;
+import com.laowan.product.product.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.amqp.core.Message;
@@ -28,19 +25,28 @@ public class ProductApplicationTest {
     @Autowired
     DirectProducer directProducer;
 
-    @Autowired
+   // @Autowired
     TopicProducer topicProducer;
 
-    @Autowired
+  //  @Autowired
     FanoutProducer fanoutProducer;
 
     @Autowired
     ReplyProducer replyProducer;
+   // @Autowired
+    HashProducer hashProducer;
 
     @Test
     public void sendMsgDirectTest() {
         for (int i = 0; i < 100; i++) {
             directProducer.sendMsg("测试direct消息" + i);
+        }
+    }
+
+    @Test
+    public void sendMsgHashTest() {
+        for (int i = 0; i < 1000; i++) {
+            hashProducer.sendMsg("测试hash消息" +i);
         }
     }
 
@@ -84,11 +90,11 @@ public class ProductApplicationTest {
     @Test
     public void sendOneReplyTest() {
         Message message = replyProducer.sendAndReceive("测试reply消息");
-        if (message != null) {
+/*        if (message != null) {
             System.out.println(message.getBody().toString());
         } else {
             System.out.println("没有获得返回信息");
-        }
+        }*/
     }
 
     /**

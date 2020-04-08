@@ -20,6 +20,8 @@ public enum QueueEnum {
      */
     TEST_REPLY("test.reply.queue", "test.reply"),
 
+    TEST_REPLY_RESPONSE("test.reply.queue.response", ""),
+
     /**
      * direct模式测试
      */
@@ -60,6 +62,9 @@ public enum QueueEnum {
      * fanout模式
      */
     TEST_FANOUT_THREE("test.fanout.three.queue", "");
+
+
+    ;
     /**
      * 队列名称
      */

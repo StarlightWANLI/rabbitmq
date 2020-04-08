@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author: wanli
  * @create: 2019-07-02 17:11
  **/
-@RestController
+//@RestController
 public class SendMsgController {
     @Autowired
     ReplyProducer replyProducer;

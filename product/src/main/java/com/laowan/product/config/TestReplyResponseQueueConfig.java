@@ -6,36 +6,31 @@ import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.DirectExchange;
 import org.springframework.amqp.core.Queue;
-import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
-import org.springframework.amqp.rabbit.connection.ConnectionFactory;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Scope;
+
+import java.util.HashMap;
 
 /**
  * @program: rabbitmq
- * @description: 测试direct模式
+ * @description: 指定反馈队列
  * @author: wanli
  * @create: 2019-06-13 17:33
  **/
 @Configuration
-public class TestDirectQueueConfig {
+public class TestReplyResponseQueueConfig {
 
     /**
      * 配置路由交换对象实例
      *
      * @return
      */
+/*
     @Bean
-    public DirectExchange directExchange() {
-      //  DirectExchange directExchange = new DirectExchange(ExchangeEnum.DIRECT_EXCHANGE.getValue());
-
-        return new DirectExchange(ExchangeEnum.DIRECT_EXCHANGE.getValue());
+    public DirectExchange replyExchange() {
+        return new DirectExchange("");
     }
-
+*/
 
     /**
      * 配置用户注册队列对象实例
@@ -44,8 +39,8 @@ public class TestDirectQueueConfig {
      * @return
      */
     @Bean
-    public Queue queue() {
-        return new Queue(QueueEnum.TEST_DIRECT.getName(), true);
+    public Queue replyResponseQueue() {
+        return new Queue("test_response",false,false,true,new HashMap<>());
     }
 
     /**
@@ -55,8 +50,8 @@ public class TestDirectQueueConfig {
      *
      * @return
      */
-    @Bean
-    public Binding binding() {
-        return BindingBuilder.bind(queue()).to(directExchange()).with(QueueEnum.TEST_DIRECT.getRoutingKey());
-    }
+/*    @Bean
+    public Binding replyBinding() {
+        return BindingBuilder.bind(replyQueue()).to(replyExchange()).with(QueueEnum.TEST_REPLY.getRoutingKey());
+    }*/
 }

@@ -16,7 +16,10 @@ public enum ExchangeEnum {
 
     FANOUT_EXCHANGE("test.fanout.exchange"),
 
-    REPLY_EXCHANGE("test.reply.exchange");
+    //REPLY_EXCHANGE("test.reply.exchange"),
+    REPLY_EXCHANGE("test.reply.exchange"),
+
+    HASH_EXCHANGE("history");
 
 
     private String value;

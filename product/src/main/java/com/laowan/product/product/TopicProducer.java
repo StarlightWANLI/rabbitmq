@@ -16,7 +16,7 @@ import java.util.UUID;
  * @author: wanli
  * @create: 2019-06-13 16:47
  **/
-@Component
+//@Component
 @Slf4j
 public class TopicProducer implements RabbitTemplate.ConfirmCallback {
 

@@ -1,11 +1,13 @@
 package com.laowan.product.product;
 
+import com.laowan.product.config.TestReplyQueueConfig;
 import com.laowan.product.enums.ExchangeEnum;
 import com.laowan.product.enums.QueueEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.AmqpRejectAndDontRequeueException;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageProperties;
+import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,91 +27,50 @@ import java.util.concurrent.Executor;
  **/
 @Component
 @Slf4j
-public class ReplyProducer implements RabbitTemplate.ConfirmCallback {
+public class ReplyProducer  {
 
 
-    //由于rabbitTemplate的scope属性设置为ConfigurableBeanFactory.SCOPE_PROTOTYPE，所以不能自动注入
+    @Autowired
     private RabbitTemplate rabbitTemplate;
 
-    /**
-     * 构造方法注入rabbitTemplate
-     */
+
     @Autowired
-    public ReplyProducer(RabbitTemplate rabbitTemplate) {
-        this.rabbitTemplate = rabbitTemplate;
-
-        // rabbitTemplate.setTaskExecutor();
-        rabbitTemplate.setConfirmCallback(this); //rabbitTemplate如果为单例的话，那回调就是最后设置的内容
-    }
+    Queue replyResponseQueue;
 
 
-    /**
-     * 消息被成功消费的确认回调方法        消息成功发送到broker里面，收到反馈
-     *
-     * @param correlationData
-     * @param ack
-     * @param cause
-     */
-    @Override
-    public void confirm(CorrelationData correlationData, boolean ack, String cause) {
-/*        log.info(" 回调id:" + correlationData);
-        if (ack) {
-            log.info("消息发送成功");
-        } else {
-            log.info("消息发送失败:" + cause);
-        }*/
-    }
-
-    /**
-     * 发送字符串  到direct队列中    完全匹配
-     *
-     * @param content
-     */
     public Message sendAndReceive(String content) {
         //设置消息唯一id
         CorrelationData correlationId = new CorrelationData(UUID.randomUUID().toString());
         //直接发送message对象
         MessageProperties messageProperties = new MessageProperties();
         //过期时间10秒
-        messageProperties.setExpiration("5000");
+        messageProperties.setExpiration("10000");
+
+         messageProperties.setReplyTo(replyResponseQueue.getName());
         // messageProperties.set
-        content = Thread.currentThread() + "发送的消息是" + content;
+      //  content = Thread.currentThread() + "发送的消息是" + content;
+        log.info("发送的消息为：" + content);
+
+        messageProperties.setConsumerQueue(replyResponseQueue.getName());
+
+        messageProperties.setCorrelationId(correlationId.getId());
+
         Message message = new Message(content.getBytes(), messageProperties);
 
-
-        System.out.println("发送的消息是：" + content);
-        StopWatch sw = new StopWatch();
-        sw.start("发送消息任务");
-
-        rabbitTemplate.setReplyAddress("");
-
-        Message message1 = rabbitTemplate.sendAndReceive(ExchangeEnum.REPLY_EXCHANGE.getValue(), QueueEnum.TEST_REPLY.getRoutingKey(), message, correlationId);
+        rabbitTemplate.setUseTemporaryReplyQueues(false);
+        rabbitTemplate.setReplyAddress(replyResponseQueue.getName());
+        rabbitTemplate.expectedQueueNames();
+        rabbitTemplate.setUserCorrelationId(true);
 
 
+        //消息体中指定了replyTo属性就不能使用sendAndReceive
+        //Send-and-receive methods can only be used if the Message does not already have a replyTo property
+        Message response = rabbitTemplate.sendAndReceive(ExchangeEnum.REPLY_EXCHANGE.getValue(), QueueEnum.TEST_REPLY.getRoutingKey(), message, correlationId);
 
-        sw.stop();
-        System.out.println(sw.prettyPrint());
-
-        if (message1 != null) {
-            System.out.println(Thread.currentThread() + "应答的消息是：" + new String(message1.getBody()));
+        if (response != null) {
+            log.info("返回的消息为：" + new String(response.getBody()));
         }
-
-        return message1;
-
-
-        //rabbitTemplate.send(ExchangeEnum.DIRECT_EXCHANGE.getValue(), QueueEnum.TEST_DIRECT.getRoutingKey(),message,correlationId);
-
-        //发送的消息是Message对象就直接发送，不是的先转化为message对象
-        // rabbitTemplate.convertAndSend(ExchangeEnum.DIRECT_EXCHANGE.getValue(), QueueEnum.TEST_DIRECT.getRoutingKey(), content, correlationId);
-
-        // 发送消息到指定的交换器，指定的路由键，在消息转换完成后，通过 MessagePostProcessor 来添加属性
-  /*      rabbitTemplate.convertAndSend("direct.exchange","key.1",user,mes -> {
-            mes.getMessageProperties().setDeliveryMode(MessageDeliveryMode.NON_PERSISTENT);
-            return mes;
-        });*/
-
+        return response;
 
     }
-
-
 }
